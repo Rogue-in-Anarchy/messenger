@@ -7,6 +7,7 @@ import {
   useWeb3ModalProvider,
 } from "@web3modal/ethers/react";
 import nameServiceABI from "../constants/ABIs/nameServiceABI.json";
+import { toast } from 'react-toastify';
 
 const UseRegisterHook = (name, uri) => {
 
@@ -18,27 +19,23 @@ const UseRegisterHook = (name, uri) => {
         const readWriteProvider = getProvider(walletProvider);
         const signer = await readWriteProvider.getSigner();
 
-        console.log(signer, readWriteProvider);
-        console.log(
-          import.meta.env.VITE_staking_contract_address,
-          readWriteProvider
-        );
-
         const nameServiceContract = new ethers.Contract(
           import.meta.env.VITE_NAME_SERVICE_CONTRACT_ADDRESS,
           nameServiceABI,
           signer
         );
-        console.log("connected");
+        console.log("connected",name, uri);
 
         const register = await nameServiceContract.registerNameService(name, uri);
 
         const registerReceipt = await register.wait();
 
         if (registerReceipt.status) {
+          
             return console.log("registered");
         }
 
+        toast("An error Occured");
         return console.log("registration failed")
     
 
